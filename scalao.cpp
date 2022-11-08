@@ -5,6 +5,10 @@
 #include <string.h> 
 #include <ctype.h>
 
+void linha(){
+	printf("\n------------------------------");
+}
+
 struct tprodutos{
 	char nome[20];
 	char codigo[20];
@@ -14,15 +18,16 @@ struct tprodutos produtos[50];
 
 int main(){
 	
-	int cont=-1, opc;
-	char SouN;
-	FILE *arq;
+	int cont=-1, opc, auxN;
+	char SouN,indice[50];
+	float compra;
+	FILE *produ;
 	
 	setlocale(LC_ALL, "portuguese");
 	
 	do{	
-		arq=fopen("Produtos.bin", "r");
-		if(arq== NULL){
+		produ=fopen("Produtos.bin", "r");
+		if(produ== NULL){
 			printf("[ERRO] O arquivo não existe.");
 			system("pause");
 			return 0;
@@ -30,37 +35,92 @@ int main(){
 		
 		system("cls");
 		printf("::::::::::Menu::::::::::");
-		printf("\n1-Compras\n2-Guia de preços\n3-Cadastro de produtos\n0-Sair\n");
+		printf("\n1-Compras\n2-Guia de produtos\n3-Cadastro de produtos\n0-Sair\n");
 		scanf("%d", &opc);
 		switch(opc){
 			case 1:{
+				system("cls");
+				do{
+					printf("::::::::::Compras::::::::::");
+					printf("\nDigite o nome do produto:");
+					scanf("%s", &indice);
+					for(int i=0;i<=cont;i++){
+						if(strcmp(indice,produtos[i].nome)==0){
+							compra+=produtos[i].preco;
+						}
+					}
+					
+					printf("\nIndice da compra:%.2f", compra);
+					
+					printf("\nDeseja continuar? S/N\n");
+					SouN=toupper(getch());
+					
+					if(SouN == 'N'){
+						printf("\nTotal da Compra:%.2f", compra);
+						printf("\n1-Compra\n2-Cancelar");
+						scanf("%d", &opc);
+						
+						if(opc==1){
+							printf("\nCompra feita");
+							getch();
+							break;
+						}
+						
+						if(opc==2){
+							printf("\nCompra cancelada");
+							getch();
+							break;
+						}
+					} 
+				}while(1);
+			break;}
 			
-			break;}
 			case 2:{
-				arq=fopen("Produtos.bin", "r");
-				fread(produtos,sizeof(tprodutos),1,arq);
-				printf("%s", produtos[0].nome);
-				system("pause");
+				system("cls");
+				printf("::::::::::Guia de produtos::::::::::");
+				for(int i=0;i<=cont;i++){
+					printf("\nProduto:%s", produtos[i].nome);
+					printf("\nPreço:%.2f", produtos[i].preco);
+					printf("\nCódigo:%s", produtos[i].codigo);
+					linha();
+				}
+				getch();
 			break;}
+			
 			case 3:{
-				arq=fopen("Produtos.bin", "a");
 				do{
 					system("cls");
 					cont++;
 					printf("::::::::::Cadastro::::::::::");
 					printf("\nDigite o nome do produto:");
-					scanf("%s", &produtos[cont].nome);
-				
+					do{
+						fflush(stdin);
+						scanf("%s", &indice);
+						auxN=strlen(indice);
+					}while(auxN==0);
+					if(strcmp(indice,"0")==0)	break;
+						
+					strcpy(produtos[cont].nome,indice);
+					produtos[cont].nome[0]=toupper(produtos[cont].nome[0]);
+					
+			
 					printf("\nDigite o preço do produto:");
 					scanf("%f", &produtos[cont].preco);
 				
 					printf("\nDigite o código do produto:");
-					scanf("%s", &produtos[cont].codigo);
+					do{
+						fflush(stdin);
+						scanf("%s", &indice);
+						auxN=strlen(indice);
+					}while(auxN==0);
+					if(strcmp(indice,"0")==0)	break;
+						
+					strcpy(produtos[cont].codigo,indice);
+					produtos[cont].codigo[0]=toupper(produtos[cont].codigo[0]);
 					
+				
 					printf("\nDeseja continuar? S/N");
 					SouN=toupper(getch());
-					
-					fwrite(produtos, sizeof(tprodutos), 1, arq);
 					
 					if(SouN == 'N') break;
 				}while(1);

@@ -64,6 +64,21 @@ int comparaNome(char *codigo, int cont){
 	return -1;
 }
 
+int deletar(int deletar,int cont, FILE *produ){
+	for(int i=deletar;i<=cont;i++){
+		produtos[i]=produtos[i+1];
+	}
+	
+	produ=fopen("Produtos.txt", "w");
+	for(int i=0;i<=cont;i++){
+		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
+	}
+	
+	fclose(produ);
+	
+	return cont-1;
+}
+
 int main(){
 	
 	int cont=-1, opc, auxN, contPesquisa;
@@ -138,7 +153,7 @@ int main(){
 			case 2:{
 				system("cls");
 				printf("::::::::::Guia de produtos::::::::::");
-				printf("\n1-Pesquisar		2-Deletar\n");
+				printf("\n1-Pesquisar		2-Deletar	\n	     0-Voltar\n");
 				
 				for(int i=0;i<=cont;i++){
 					printf("\nProduto:%s", produtos[i].nome);
@@ -158,7 +173,7 @@ int main(){
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
 						printf("\nPreço%.2f:", produtos[contPesquisa].preco);
-						printf("\nCódigo:%s", produtos[contPesquisa].codigo);
+						printf("\nCódigo:%s\n", produtos[contPesquisa].codigo);
 					}
 					
 					else
@@ -174,14 +189,19 @@ int main(){
 					scanf("%s", indice);
 					contPesquisa=comparaNome(indice, cont);
 					if(contPesquisa != -1){
-						deletar(contPesquisa,cont);
+						cont=deletar(contPesquisa,cont,produ);
+						printf("\nProduto deletado\n");
+						system("pause");
+						
 					}
 					
-					else
-						printf("\nProduto não encontrado!!");
+					else{
+						printf("\nProduto não encontrado!!\n");
+						system("pause");
+					}
 				}	
-							
-				else
+						
+				else if(opc==0)	
 					getch();
 			break;}
 			
@@ -238,7 +258,11 @@ int main(){
 					if(SouN == 'N') break;
 				}while(1);
 			break;}
+			
+			case 0:{
+				return 0;	
+			break;}
 		}
-	}while(opc!=0);
+	}while(1);
 	
 }

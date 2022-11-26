@@ -27,7 +27,7 @@ bool validarIgual(int cont, char *indice){
 }
 
 bool escreverArq (int cont, FILE *produ){
-	produ=fopen("Produtos.txt", "a");
+	produ=fopen("Produtos.txt", "w");
 	if(produ== NULL)
 		return false;
 	
@@ -39,7 +39,7 @@ bool escreverArq (int cont, FILE *produ){
 	return true;
 }
 
-int lerArq ( FILE *produ){
+int lerArq (FILE *produ){
 	int i=-1;
 	produ=fopen("Produtos.txt", "r");
 	if(produ == NULL)
@@ -70,17 +70,21 @@ int deletar(int deletar,int cont, FILE *produ){
 	}
 	
 	produ=fopen("Produtos.txt", "w");
-	for(int i=0;i<=cont;i++){
+	for(int i=0;i<cont;i++){
 		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
 	}
-	
 	fclose(produ);
-	
-	return cont-1;
+	cont--;
+	if(cont<0){
+		remove("Produtos.txt");
+		produ=fopen("Produtos.txt", "w");
+		fclose(produ);
+	}
+		
+	return cont;
 }
 
 int main(){
-	
 	int cont=-1, opc, auxN, contPesquisa;
 	char SouN,indice[50];
 	float compra;
@@ -88,7 +92,7 @@ int main(){
 	
 	
 	produ=fopen("Produtos.txt", "r");
-	if(produ== NULL){
+	if(produ == NULL){
 		printf("Erro [404] O arquivo não existe.");
 		system("pause");
 		return 0;
@@ -114,20 +118,22 @@ int main(){
 		switch(opc){
 			case 1:{
 				system("cls");
+				printf("::::::::::Compras::::::::::");
+				printf("\ndigite N para parar.");
+				compra=0;
 				do{
-					compra=0;
-					printf("::::::::::Compras::::::::::");
-					printf("\nDigite o nome do produto:");
+					printf("\nDigite o codigo do produto:");
 					scanf("%s", &indice);
+					indice[0]=toupper(indice[0]);
+					
 					for(int i=0;i<=cont;i++){
-						if(strcmp(indice,produtos[i].nome)==0){
+						if(strcmp(indice,produtos[i].codigo)==0){
 							compra+=produtos[i].preco;
 						}
 					}
 					
-					printf("\nIndice da compra:%.2f", compra);
+					printf("\nIndice da compra:%.2f\n", compra);
 					
-					printf("\nDeseja continuar? S/N\n");
 					SouN=toupper(getch());
 					
 					if(SouN == 'N'){
@@ -169,6 +175,8 @@ int main(){
 					printf("::::::::::Pesquisar produtos::::::::::");
 					printf("\nDigite o código do produto:");
 					scanf("%s", indice);
+					indice[0]=toupper(indice[0]);
+					
 					contPesquisa=comparaNome(indice, cont);
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
@@ -184,9 +192,11 @@ int main(){
 				
 				else if(opc == 2){
 					system("cls");
-					printf("::::::::::Pesquisar produtos::::::::::");
+					printf("::::::::::Deletar produtos::::::::::");
 					printf("\nDigite o código do produto:");
 					scanf("%s", indice);
+					indice[0]=toupper(indice[0]);
+					
 					contPesquisa=comparaNome(indice, cont);
 					if(contPesquisa != -1){
 						cont=deletar(contPesquisa,cont,produ);

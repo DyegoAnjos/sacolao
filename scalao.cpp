@@ -99,7 +99,6 @@ int main(){
 	}
 	fclose(produ);
 	
-	setlocale(LC_ALL, "portuguese");
 	
 	if(cont=lerArq(produ)==404){
 		printf("Erro [404] O arquivo não existe.");
@@ -110,11 +109,13 @@ int main(){
 	else
 		cont=lerArq(produ);
 	
+	setlocale(LC_ALL, "portuguese");
 	do{	
 		system("cls");
 		printf("::::::::::Menu::::::::::");
 		printf("\n1-Compras\n2-Guia de produtos\n3-Cadastro de produtos\n0-Sair\n");
 		scanf("%d", &opc);
+		
 		switch(opc){
 			case 1:{
 				system("cls");
@@ -167,7 +168,7 @@ int main(){
 					printf("\nCódigo:%s", produtos[i].codigo);
 					linha();
 				}
-				
+			
 				scanf("%d", &opc);
 				
 				if(opc == 1){

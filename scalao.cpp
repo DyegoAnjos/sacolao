@@ -7,6 +7,33 @@
 #include "devTools.h"
 #include "funcSacolao.h"
 
+bool escreverArq (int cont, FILE *produ, Produtos *produtos){
+	produ=fopen("Produtos.txt", "w");
+	if(produ== NULL)
+		return false;
+	
+	for(int i=0;i<=cont;i++){
+		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
+	}
+	
+	fclose(produ);
+	return true;
+}
+
+int lerArq (FILE *produ, Produtos *produtos){
+	int i=-1;
+	produ=fopen("Produtos.txt", "r");
+	if(produ == NULL)
+		return 404;
+	
+	while(!feof(produ)){
+		i++;	
+		fread(&produtos[i],sizeof(struct tprodutos),1,produ);
+	}
+	fclose(produ);
+	return i-1;
+}
+
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
 	char SouN,indice[50];
@@ -103,16 +130,21 @@ int main(){
 					scanf("%s", indice);
 					indice[0]=toupper(indice[0]);
 					
-					contPesquisa=comparaNome(indice, cont,produtos);
+					for(int i=0;i<=cont;i++){
+						contPesquisa=StcExisteStr(cont, indice, produtos,produtos[i].codigo);
+					
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
 						printf("\nPreço%.2f:", produtos[contPesquisa].preco);
 						printf("\nCódigo:%s\n", produtos[contPesquisa].codigo);
 					}
 					
-					else
-						printf("\nProduto não encontrado!!");
 					
+					
+					}
+					if(contPesquisa == -1){
+						printf("\nProduto não encontrado!!");
+					}
 					system("pause");
 				}
 				
@@ -123,17 +155,19 @@ int main(){
 					scanf("%s", indice);
 					indice[0]=toupper(indice[0]);
 					
-					contPesquisa=comparaNome(indice, cont,produtos);
-					if(contPesquisa != -1){
-						cont=deletar(contPesquisa,cont,produ,produtos);
-						printf("\nProduto deletado\n");
-						system("pause");
+					for(int i=0;i<=cont;i++){
+//						contPesquisa=StcExisteStr(cont, indice ,produtos[i].codigo);
+						if(contPesquisa != -1){
+							cont=ArqStcDeletar(cont,contPesquisa,produtos,produ);
+							printf("\nProduto deletado\n");
+							system("pause");
 						
-					}
+						}
 					
-					else{
-						printf("\nProduto não encontrado!!\n");
-						system("pause");
+						else{
+							printf("\nProduto não encontrado!!\n");
+							system("pause");
+						}
 					}
 				}	
 						
@@ -173,12 +207,13 @@ int main(){
 					
 					indice[0]=toupper(indice[0]);
 					
-					if(validarIgual(cont,indice,produtos,produtos[cont].codigo)==false){
+//					for(int i=0;i<=cont;i++)
+//					if(StcExisteStr(cont,indice,produtos[i].codigo) != -1){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;
 						break;
-					}
+//					}
 					
 					strcpy(produtos[cont].codigo,indice);
 					

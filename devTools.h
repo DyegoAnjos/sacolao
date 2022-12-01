@@ -1,8 +1,9 @@
+//Funções Gerais
 void linha(){
 	printf("\n------------------------------");
 }
 
-//A bilioteca "devTools" usa struct como 
+//A bilioteca "devTools" usa struct como parâmetros então será necessário adiconar a struct usada e mudar algumas coisas dos códigos
 
 typedef struct tprodutos{
 	char nome[20];
@@ -10,42 +11,74 @@ typedef struct tprodutos{
 	float preco;
 }Produtos;
 
-bool validarIgual(int tamanho, char *indice, Produtos *produtos, char *codigo){
-	for(int i=0;i<=tamanho;i++){
-		if(strcmp(indice,produtos[i].codigo)==0)
-			return false;
-	}
+/*Sintaxes
+	StcExisteStr: StcExiste(tamanho da struct, string para comparar, Struct usada)
+		Compara o valor de uma string e de uma string dentro de uma struct e retorna a posição dela, caso não exista elá retorna -1.
+		
+	StcExisteInt: StcExisteInt(tamanho da struct, número inteiro para comparar, Struct usada)
+		Compara o valor de um int e de um int dentro de uma struct e retorna a posição dele, caso não exista ela retorna -1
+		
+	StcExisteFloat: StcExisteFloat(tamanho da struct, número decimal para comparar, Struct usada)
+		Compara o valor de um float e de um float dentro de uma struct e retorna a posição dele, caso não exista ela retorna -1
 	
-	return true;
-}
+	StcDeletar: StcDeletar(tamanho, posição da struct para deletar, Struct usada)
+		Deleta uma struct de uma posição, retornando o novo tamanho da struct
+		
+	ArqStcDeletar: ArqStcDeletar (tamanho, posição da struct para deletar, Struct usada, ponteiro no arquivo)
+		Deleta uma strict de uma posição, retornando o novo tamanho da struct e escrevendo no arquivo
+*/
 
-int comparaNome(char *codigo, int cont, Produtos *produtos){
-	int i=0;
-	
-	for(i=0;i<=cont;i++){
-		if(strcmp(codigo, produtos[i].codigo)==0)
+int StcExisteStr(int tamanho, char *indice, Produtos *structe ,char *codigo){
+	for(int i=0;i<=tamanho;i++){
+		if(strcmp(indice, codigo)==0)
 			return i;
 	}
 	
 	return -1;
 }
 
-int deletar(int deletar,int cont, FILE *produ, Produtos *produtos){
-	for(int i=deletar;i<=cont;i++){
+int StcExisteInt(int tamanho, int indice, Produtos *structe){
+	for(int i=0;i<=tamanho;i++){
+		if(structe[i].preco == indice)
+			return i;
+	}
+	
+	return -1;
+}
+
+//int StcExisteFloat(int tamanho, float indice, Produtos *structe){
+//	for(int i=0;i<=tamanho;i++){
+//		if(structe[i].preco == indice)
+//			return i;
+//	}
+//	
+//	return -1;
+//}
+
+//int StcDeletar(int tamanho, int deletar, Produtos *produtos){
+//	for(int i=deletar;i<=tamanho;i++){
+//		produtos[i]=produtos[i+1];
+//	}
+//	tamanho--;
+//	return tamanho;
+//}
+
+int ArqStcDeletar(int tamanho, int deletar, Produtos *produtos, FILE *produ){
+	for(int i=deletar;i<=tamanho;i++){
 		produtos[i]=produtos[i+1];
 	}
 	
 	produ=fopen("Produtos.txt", "w");
-	for(int i=0;i<cont;i++){
+	for(int i=0;i<tamanho;i++){
 		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
 	}
 	fclose(produ);
-	cont--;
-	if(cont<0){
+	tamanho--;
+	if(tamanho<0){
 		remove("Produtos.txt");
 		produ=fopen("Produtos.txt", "w+");
 		fclose(produ);
 	}
 		
-	return cont;
+	return tamanho;
 }

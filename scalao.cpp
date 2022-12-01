@@ -4,85 +4,8 @@
 #include <locale.h> 
 #include <string.h> 
 #include <ctype.h>
-
-void linha(){
-	printf("\n------------------------------");
-}
-
-typedef struct tprodutos{
-	char nome[20];
-	char codigo[20];
-	float preco;
-}Produtos;
-
-Produtos produtos[50];
-
-bool validarIgual(int cont, char *indice){
-	for(int i=0;i<=cont;i++){
-		if(strcmp(indice,produtos[i].codigo)==0)
-			return false;
-	}
-	
-	return true;
-}
-
-bool escreverArq (int cont, FILE *produ){
-	produ=fopen("Produtos.txt", "w");
-	if(produ== NULL)
-		return false;
-	
-	for(int i=0;i<=cont;i++){
-		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
-	}
-	
-	fclose(produ);
-	return true;
-}
-
-int lerArq (FILE *produ){
-	int i=-1;
-	produ=fopen("Produtos.txt", "r");
-	if(produ == NULL)
-		return 404;
-	
-	while(!feof(produ)){
-		i++;	
-		fread(&produtos[i],sizeof(struct tprodutos),1,produ);
-	}
-	fclose(produ);
-	return i-1;
-}
-
-int comparaNome(char *codigo, int cont){
-	int i=0;
-	
-	for(i=0;i<=cont;i++){
-		if(strcmp(codigo, produtos[i].codigo)==0)
-			return i;
-	}
-	
-	return -1;
-}
-
-int deletar(int deletar,int cont, FILE *produ){
-	for(int i=deletar;i<=cont;i++){
-		produtos[i]=produtos[i+1];
-	}
-	
-	produ=fopen("Produtos.txt", "w");
-	for(int i=0;i<cont;i++){
-		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
-	}
-	fclose(produ);
-	cont--;
-	if(cont<0){
-		remove("Produtos.txt");
-		produ=fopen("Produtos.txt", "w");
-		fclose(produ);
-	}
-		
-	return cont;
-}
+#include "devTools.h"
+#include "funcSacolao.h"
 
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
@@ -90,6 +13,7 @@ int main(){
 	float compra;
 	FILE *produ;
 	
+	Produtos produtos[50];
 	
 	produ=fopen("Produtos.txt", "r");
 	if(produ == NULL){
@@ -100,14 +24,14 @@ int main(){
 	fclose(produ);
 	
 	
-	if(cont=lerArq(produ)==404){
+	if(cont=lerArq(produ,produtos)==404){
 		printf("Erro [404] O arquivo não existe.");
 		system("pause");
 		return 0;
 	}
 	
 	else
-		cont=lerArq(produ);
+		cont=lerArq(produ,produtos);
 	
 	setlocale(LC_ALL, "portuguese");
 	do{	
@@ -115,6 +39,7 @@ int main(){
 		printf("::::::::::Menu::::::::::");
 		printf("\n1-Compras\n2-Guia de produtos\n3-Cadastro de produtos\n0-Sair\n");
 		scanf("%d", &opc);
+		
 		
 		switch(opc){
 			case 1:{
@@ -178,7 +103,7 @@ int main(){
 					scanf("%s", indice);
 					indice[0]=toupper(indice[0]);
 					
-					contPesquisa=comparaNome(indice, cont);
+					contPesquisa=comparaNome(indice, cont,produtos);
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
 						printf("\nPreço%.2f:", produtos[contPesquisa].preco);
@@ -198,9 +123,9 @@ int main(){
 					scanf("%s", indice);
 					indice[0]=toupper(indice[0]);
 					
-					contPesquisa=comparaNome(indice, cont);
+					contPesquisa=comparaNome(indice, cont,produtos);
 					if(contPesquisa != -1){
-						cont=deletar(contPesquisa,cont,produ);
+						cont=deletar(contPesquisa,cont,produ,produtos);
 						printf("\nProduto deletado\n");
 						system("pause");
 						
@@ -248,7 +173,7 @@ int main(){
 					
 					indice[0]=toupper(indice[0]);
 					
-					if(validarIgual(cont,indice)==false){
+					if(validarIgual(cont,indice,produtos,produtos[cont].codigo)==false){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;
@@ -257,7 +182,7 @@ int main(){
 					
 					strcpy(produtos[cont].codigo,indice);
 					
-					if(escreverArq(cont, produ)==false){
+					if(escreverArq(cont, produ,produtos)==false){
 						printf("Erro [404] O arquivo não existe.");
 						system("pause");
 						return 0;

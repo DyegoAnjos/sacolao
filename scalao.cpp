@@ -7,33 +7,6 @@
 #include "devTools.h"
 #include "funcSacolao.h"
 
-bool escreverArq (int cont, FILE *produ, Produtos *produtos){
-	produ=fopen("Produtos.txt", "w");
-	if(produ== NULL)
-		return false;
-	
-	for(int i=0;i<=cont;i++){
-		fwrite(&produtos[i],sizeof(struct tprodutos),1,produ);
-	}
-	
-	fclose(produ);
-	return true;
-}
-
-int lerArq (FILE *produ, Produtos *produtos){
-	int i=-1;
-	produ=fopen("Produtos.txt", "r");
-	if(produ == NULL)
-		return 404;
-	
-	while(!feof(produ)){
-		i++;	
-		fread(&produtos[i],sizeof(struct tprodutos),1,produ);
-	}
-	fclose(produ);
-	return i-1;
-}
-
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
 	char SouN,indice[50];
@@ -51,7 +24,7 @@ int main(){
 	fclose(produ);
 	
 	
-	if(cont=lerArq(produ,produtos)==404){
+	if(cont=StclerArq(produtos,produ,"Produtos.txt")==404){
 		printf("Erro [404] O arquivo não existe.");
 		system("pause");
 		return 0;
@@ -131,7 +104,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=StcExisteStr(cont, indice, produtos,produtos[i].codigo);
+						contPesquisa=StcPesquisaStr(cont, indice,produtos[i].codigo);
 					
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
@@ -156,9 +129,9 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-//						contPesquisa=StcExisteStr(cont, indice ,produtos[i].codigo);
+						contPesquisa=StcPesquisaStr(cont, indice ,produtos[i].codigo);
 						if(contPesquisa != -1){
-							cont=ArqStcDeletar(cont,contPesquisa,produtos,produ);
+							cont=StcDeletarArq(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
 							printf("\nProduto deletado\n");
 							system("pause");
 						
@@ -191,7 +164,6 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					strcpy(produtos[cont].nome,indice);
-					
 			
 					printf("\nDigite o preço do produto:");
 					scanf("%f", &produtos[cont].preco);
@@ -207,17 +179,17 @@ int main(){
 					
 					indice[0]=toupper(indice[0]);
 					
-//					for(int i=0;i<=cont;i++)
-//					if(StcExisteStr(cont,indice,produtos[i].codigo) != -1){
+					for(int i=0;i<=cont;i++)
+					if(StcPesquisaStr(cont,indice,produtos[i].codigo) != -1){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;
 						break;
-//					}
+					}
 					
 					strcpy(produtos[cont].codigo,indice);
 					
-					if(escreverArq(cont, produ,produtos)==false){
+					if(StcEscreverArq(produtos,cont,produ,"Produtos.txt","r")==false){
 						printf("Erro [404] O arquivo não existe.");
 						system("pause");
 						return 0;

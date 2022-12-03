@@ -4,8 +4,9 @@
 #include <locale.h> 
 #include <string.h> 
 #include <ctype.h>
+#include "struct.h"
 #include "devTools.h"
-#include "funcSacolao.h"
+#include "files.h"
 
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
@@ -24,14 +25,14 @@ int main(){
 	fclose(produ);
 	
 	
-	if(cont=StclerArq(produtos,produ,"Produtos.txt")==404){
+	if(cont=StcLerArq(produtos,produ,"Produtos.txt")==NULL){
 		printf("Erro [404] O arquivo não existe.");
 		system("pause");
 		return 0;
 	}
 	
 	else
-		cont=lerArq(produ,produtos);
+		cont=StcLerArq(produtos,produ,"Produtos.txt");
 	
 	setlocale(LC_ALL, "portuguese");
 	do{	
@@ -91,7 +92,7 @@ int main(){
 					printf("\nProduto:%s", produtos[i].nome);
 					printf("\nPreço:%.2f", produtos[i].preco);
 					printf("\nCódigo:%s", produtos[i].codigo);
-					linha();
+					linha(30);
 				}
 			
 				scanf("%d", &opc);
@@ -104,7 +105,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=StcPesquisaStr(cont, indice,produtos[i].codigo);
+						contPesquisa=PesquisaStr(cont, indice,produtos[i].codigo);
 					
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
@@ -129,7 +130,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=StcPesquisaStr(cont, indice ,produtos[i].codigo);
+						contPesquisa=PesquisaStr(cont, indice ,produtos[i].codigo);
 						if(contPesquisa != -1){
 							cont=StcDeletarArq(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
 							printf("\nProduto deletado\n");
@@ -180,7 +181,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++)
-					if(StcPesquisaStr(cont,indice,produtos[i].codigo) != -1){
+					if(PesquisaStr(cont,indice,produtos[i].codigo) != -1){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;
@@ -189,7 +190,7 @@ int main(){
 					
 					strcpy(produtos[cont].codigo,indice);
 					
-					if(StcEscreverArq(produtos,cont,produ,"Produtos.txt","r")==false){
+					if(StcEscreverArq(produtos,cont,produ,"Produtos.txt","w")==false){
 						printf("Erro [404] O arquivo não existe.");
 						system("pause");
 						return 0;

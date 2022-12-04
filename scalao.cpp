@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include "struct.h"
 #include "devTools.h"
-#include "files.h"
+#include "arquivo.h"
 
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
@@ -25,14 +25,14 @@ int main(){
 	fclose(produ);
 	
 	
-	if(cont=StcLerArq(produtos,produ,"Produtos.txt")==NULL){
+	if(cont=ArqLerStc(produtos,produ,"Produtos.txt")==NULL){
 		printf("Erro [404] O arquivo não existe.");
 		system("pause");
 		return 0;
 	}
 	
 	else
-		cont=StcLerArq(produtos,produ,"Produtos.txt");
+		cont=ArqLerStc(produtos,produ,"Produtos.txt");
 	
 	setlocale(LC_ALL, "portuguese");
 	do{	
@@ -132,7 +132,7 @@ int main(){
 					for(int i=0;i<=cont;i++){
 						contPesquisa=PesquisaStr(cont, indice ,produtos[i].codigo);
 						if(contPesquisa != -1){
-							cont=StcDeletarArq(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
+							cont=ArqDeletarStc(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
 							printf("\nProduto deletado\n");
 							system("pause");
 						
@@ -190,7 +190,7 @@ int main(){
 					
 					strcpy(produtos[cont].codigo,indice);
 					
-					if(StcEscreverArq(produtos,cont,produ,"Produtos.txt","w")==false){
+					if(ArqEscreverStc(produtos,cont,produ,"Produtos.txt","w")==false){
 						printf("Erro [404] O arquivo não existe.");
 						system("pause");
 						return 0;

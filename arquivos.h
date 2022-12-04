@@ -4,7 +4,7 @@
 	ela aqui no arquivo.
 */
 
-/*Funções
+/*Sintaxes
 	ArqDeletarStc: ArqDeletarStc(Struct usada, tamanho, posição da struct para deletar, ponteiro do arquivo, nome do arquivo, método para abri)
 		Deleta uma struct de uma posição, retornando o novo tamanho da struct e escrevendo tudo no arquivo de texto.
 	

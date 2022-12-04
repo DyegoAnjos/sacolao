@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include "struct.h"
 #include "devTools.h"
-#include "arquivo.h"
+#include "arquivos.h"
 
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
@@ -92,7 +92,7 @@ int main(){
 					printf("\nProduto:%s", produtos[i].nome);
 					printf("\nPreço:%.2f", produtos[i].preco);
 					printf("\nCódigo:%s", produtos[i].codigo);
-					linha(30);
+					ToolLinha(30,1);
 				}
 			
 				scanf("%d", &opc);
@@ -105,7 +105,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=PesquisaStr(cont, indice,produtos[i].codigo);
+						contPesquisa=ToolPesquisaStr(cont, indice,produtos[i].codigo);
 					
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
@@ -130,7 +130,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=PesquisaStr(cont, indice ,produtos[i].codigo);
+						contPesquisa=ToolPesquisaStr(cont, indice ,produtos[i].codigo);
 						if(contPesquisa != -1){
 							cont=ArqDeletarStc(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
 							printf("\nProduto deletado\n");
@@ -181,7 +181,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++)
-					if(PesquisaStr(cont,indice,produtos[i].codigo) != -1){
+					if(ToolPesquisaStr(cont,indice,produtos[i].codigo) != -1){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;

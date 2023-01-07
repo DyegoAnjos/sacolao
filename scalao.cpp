@@ -4,9 +4,9 @@
 #include <locale.h> 
 #include <string.h> 
 #include <ctype.h>
-#include "struct.h"
-#include "devTools.h"
-#include "arquivos.h"
+#include "Bibliotecas\\struct.h"
+#include "Bibliotecas\\devTools.h"
+#include "Bibliotecas\\arquivos.h"
 
 int main(){
 	int cont=-1, opc, auxN, contPesquisa;
@@ -25,14 +25,9 @@ int main(){
 	fclose(produ);
 	
 	
-	if(cont=ArqLerStc(produtos,produ,"Produtos.txt")==NULL){
-		printf("Erro [404] O arquivo não existe.");
-		system("pause");
-		return 0;
-	}
+
 	
-	else
-		cont=ArqLerStc(produtos,produ,"Produtos.txt");
+		cont=ArqLerStc(produtos,"Produtos.txt");
 	
 	setlocale(LC_ALL, "portuguese");
 	do{	
@@ -92,7 +87,7 @@ int main(){
 					printf("\nProduto:%s", produtos[i].nome);
 					printf("\nPreço:%.2f", produtos[i].preco);
 					printf("\nCódigo:%s", produtos[i].codigo);
-					ToolLinha(30,1);
+					linha(30,1);
 				}
 			
 				scanf("%d", &opc);
@@ -105,7 +100,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=ToolPesquisaStr(cont, indice,produtos[i].codigo);
+						contPesquisa=pesquisaStr(cont, indice,produtos[i].codigo);
 					
 					if(contPesquisa != -1){
 						printf("\nNome:%s", produtos[contPesquisa].nome);
@@ -130,9 +125,9 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++){
-						contPesquisa=ToolPesquisaStr(cont, indice ,produtos[i].codigo);
+						contPesquisa=pesquisaStr(cont, indice ,produtos[i].codigo);
 						if(contPesquisa != -1){
-							cont=ArqDeletarStc(produtos,cont,contPesquisa,produ,"Produtos.txt", "w+");
+							cont=ArqDeletarStc(produtos,cont,contPesquisa,"Produtos.txt");
 							printf("\nProduto deletado\n");
 							system("pause");
 						
@@ -181,7 +176,7 @@ int main(){
 					indice[0]=toupper(indice[0]);
 					
 					for(int i=0;i<=cont;i++)
-					if(ToolPesquisaStr(cont,indice,produtos[i].codigo) != -1){
+					if(pesquisaStr(cont,indice,produtos[i].codigo) != -1){
 						printf("Produto já existente\n");
 						system("pause");
 						cont--;
@@ -190,7 +185,7 @@ int main(){
 					
 					strcpy(produtos[cont].codigo,indice);
 					
-					if(ArqEscreverStc(produtos,cont,produ,"Produtos.txt","w")==false){
+					if(ArqEscreverStc(produtos,cont,"Produtos.txt","w")==false){
 						printf("Erro [404] O arquivo não existe.");
 						system("pause");
 						return 0;

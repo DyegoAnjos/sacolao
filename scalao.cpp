@@ -24,10 +24,7 @@ int main(){
 	}
 	fclose(produ);
 	
-	
-
-	
-		cont=ArqLerStc(produtos,"Produtos.txt");
+	cont=ArqLerStc(produtos,"Produtos.txt");
 	
 	setlocale(LC_ALL, "portuguese");
 	do{	
@@ -60,21 +57,10 @@ int main(){
 					
 					if(SouN == 'N'){
 						printf("\nTotal da Compra:%.2f", compra);
-						printf("\n1-Compra\n2-Cancelar");
-						scanf("%d", &opc);
-						
-						if(opc==1){
-							printf("\nCompra feita");
-							getch();
-							break;
-						}
-						
-						if(opc==2){
-							printf("\nCompra cancelada");
-							getch();
-							break;
-						}
-					} 
+						getch();
+						break;
+					}
+					
 				}while(1);
 			break;}
 			
